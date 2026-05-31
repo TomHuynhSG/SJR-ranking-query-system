@@ -21,7 +21,8 @@ function parseCsv(csvString) {
         parse(csvString, {
             columns: true,
             delimiter: ';',
-            skip_empty_lines: true
+            skip_empty_lines: true,
+            relax_quotes: true
         }, (err, records) => {
             if (err) reject(err);
             else resolve(records);
@@ -45,9 +46,9 @@ app.get('/api/search', async (req, res) => {
             await page.goto('https://www.scimagojr.com', { waitUntil: 'domcontentloaded' });
             try {
                 // Wait briefly in case of Cloudflare challenge on the homepage
-                await page.waitForSelector('.searchinput', { timeout: 10000 });
+                await page.waitForSelector('input', { timeout: 10000 });
             } catch (e) {
-                console.log('Timeout waiting for .searchinput on homepage');
+                console.log('Timeout waiting for input on homepage');
             }
         }
         return page;
