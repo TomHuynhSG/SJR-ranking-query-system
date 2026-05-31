@@ -348,7 +348,7 @@ console.log(`Found ${ids.length} categories to download.`);
     let skippedCount = 0;
     
     for (const id of ids) {
-        const year = 2024;
+        const year = 2022;
         const csvUrl = `https://www.scimagojr.com/journalrank.php?category=${id}&type=j&year=${year}&out=xls`;
         const cacheFilePath = path.join(cacheDir, `cat_${id}_year_${year}.csv`);
         

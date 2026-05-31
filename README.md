@@ -8,7 +8,7 @@ A powerful and fast Node.js web application designed to instantly query, calcula
 
 - **Instant Results via Smart Caching**:
   - **Journal Info Cache**: Stores journal metadata (Name, SourceID, Subject Categories) to skip repetitive search scraping.
-  - **CSV Ranking Cache**: Stores Scimago's official ranking CSVs locally. The `csv_ranking_files` directory currently holds **620 pre-downloaded CSV files** (covering all 310 subject categories for both 2024 and 2025). This massive local dataset allows the system to serve data instantly and perform complex percentile calculations without making external requests.
+  - **CSV Ranking Cache**: Stores Scimago's official ranking CSVs locally. The `csv_ranking_files` directory currently holds **1,242 pre-downloaded CSV files** (covering all 311 subject categories for 2022, 2023, 2024, and 2025). This massive local dataset allows the system to serve data instantly and perform complex percentile calculations without making external requests.
 - **Advanced Cloudflare Bypass**: Utilizes `puppeteer-extra` with stealth plugins and in-browser native `fetch` evaluation to seamlessly bypass Scimago's Cloudflare bot protection mechanisms.
 - **Dynamic Percentile Calculation**: Automatically calculates a journal's exact percentile ranking within its subject categories (`Rank / Total Journals`).
 - **Bulk Search Capabilities**: Features a dedicated "Bulk Search" mode allowing you to paste a list of multiple journals (separated by commas, semicolons, or newlines). The system processes them sequentially, isolating and displaying the single highest-ranking category for each journal instantly.
@@ -74,7 +74,7 @@ SJR-ranking-query-system/
 │   ├── script.js            # Frontend logic & DOM manipulation
 │   └── favicon.ico          # RMIT Favicon
 ├── info_cache/              # Auto-generated cache for journal search results
-├── csv_ranking_files/       # Database of 620 pre-downloaded Scimago ranking CSVs
+├── csv_ranking_files/       # Database of 1,242 pre-downloaded Scimago ranking CSVs (2022-2025)
 └── scratch/
     ├── download_csvs.js     # Utility script for batch downloading CSVs
     └── take_screenshot.js   # Automated Puppeteer script for capturing UI screenshots
