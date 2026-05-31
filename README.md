@@ -43,6 +43,10 @@ A powerful and fast Node.js web application designed to instantly query, calcula
 ## 💻 Usage
 
 ### 1. Start the Server
+**Option A: Windows Shortcut (Easiest)**
+Right-click `Launch_SJR_App.bat`, select **"Send to" -> "Desktop (create shortcut)"**. You can now double-click this shortcut on your desktop at any time to automatically install dependencies, boot the server, and open the web app.
+
+**Option B: Manual Terminal**
 Run the following command to start the Express backend:
 ```bash
 npm start
@@ -67,6 +71,7 @@ node scratch/download_csvs.js
 ```text
 SJR-ranking-query-system/
 ├── package.json             # Project dependencies and scripts
+├── Launch_SJR_App.bat       # Windows quick-start shortcut script
 ├── server.js                # Express API backend & Puppeteer scraping logic
 ├── public/                  # Frontend assets
 │   ├── index.html           # Main UI layout
