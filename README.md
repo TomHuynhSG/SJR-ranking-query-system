@@ -11,12 +11,15 @@ A powerful and fast Node.js web application designed to instantly query, calcula
   - **CSV Ranking Cache**: Stores Scimago's official ranking CSVs locally. If a CSV is already cached for a given subject category and year, the system serves data instantly without any external requests.
 - **Advanced Cloudflare Bypass**: Utilizes `puppeteer-extra` with stealth plugins and in-browser native `fetch` evaluation to seamlessly bypass Scimago's Cloudflare bot protection mechanisms.
 - **Dynamic Percentile Calculation**: Automatically calculates a journal's exact percentile ranking within its subject categories (`Rank / Total Journals`).
-- **Premium User Interface**: Features a modern, responsive, dark-themed "glassmorphism" aesthetic built with vanilla CSS.
+- **Bulk Search Capabilities**: Features a dedicated "Bulk Search" mode allowing you to paste a list of multiple journals (separated by commas, semicolons, or newlines). The system processes them sequentially, isolating and displaying the single highest-ranking category for each journal instantly.
+- **Premium User Interface**: Features a modern, expansive, dark-themed "glassmorphism" aesthetic built with vanilla CSS. Includes seamless tab toggling between Single and Bulk modes.
 - **Intelligent Sorting & Highlighting**: Automatically sorts categories by the best performing percentile and highlights the "🏆 Best Rank" category.
 - **Comprehensive Details**: Extracts and displays journal Publisher, Country, SJR Score, Quartile, and H-Index directly from the ranking data.
 - **Batch Pre-fetching**: Includes a utility script to pre-download all subject category CSVs in the background to ensure lighting-fast zero-latency queries.
 
-![Website Screenshot](public/screenshot.png)
+![Single Search Website Screenshot](public/screenshot.png)
+
+![Bulk Search Website Screenshot](public/screenshot_bulk.png)
 
 ## 🛠️ Technology Stack
 
@@ -46,11 +49,10 @@ npm start
 ```
 *The server will run locally on `http://localhost:3000`.*
 
-### 2. Query Rankings
+### 2. Query Rankings (Single & Bulk)
 - Open your browser and navigate to `http://localhost:3000`.
-- Type in the exact name of a journal (e.g., *Nature Communications*).
-- Select the desired ranking year from the dropdown.
-- Click Search. The system will retrieve the rankings, cache the files, and display the results.
+- **Single Search**: Type in the exact name of a journal (e.g., *Nature Communications*), select the desired ranking year, and click Search.
+- **Bulk Search**: Click the "Bulk Search" toggle at the top of the search bar. Paste a list of journal names separated by commas or newlines (e.g., `Nature Communications, Cell, Journal of Finance`). Click Search and watch the live progress indicator as the system sequentially fetches and renders the highest-ranking category for each journal.
 
 ### 3. Pre-downloading CSV Cache (Optional but Recommended)
 To make all queries for a specific year instantaneous, you can run the included batch downloading script. This script securely navigates Cloudflare and pre-downloads the CSV files for over 300 subject categories.
@@ -74,7 +76,8 @@ SJR-ranking-query-system/
 ├── info_cache/              # Auto-generated cache for journal search results
 ├── csv_ranking_files/       # Auto-generated cache for Scimago ranking CSVs
 └── scratch/
-    └── download_csvs.js     # Utility script for batch downloading CSVs
+    ├── download_csvs.js     # Utility script for batch downloading CSVs
+    └── take_screenshot.js   # Automated Puppeteer script for capturing UI screenshots
 ```
 
 ## ⚠️ Important Notes on Scraping

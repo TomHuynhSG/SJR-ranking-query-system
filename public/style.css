@@ -72,9 +72,9 @@ body {
 }
 
 .container {
-    max-width: 1200px;
+    max-width: 1600px;
     margin: 0 auto;
-    padding: 4rem 2rem;
+    padding: 2rem 1rem;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -109,10 +109,10 @@ header p {
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--glass-border);
-    border-radius: 9999px;
-    padding: 0.5rem;
+    border-radius: 24px;
+    padding: 1rem;
     width: 100%;
-    max-width: 600px;
+    max-width: 1400px;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -123,13 +123,62 @@ header p {
     border-color: var(--accent);
 }
 
-form {
+.mode-toggle {
     display: flex;
-    align-items: center;
+    justify-content: center;
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: 9999px;
+    padding: 0.35rem;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto 1.5rem auto;
 }
 
-input {
+.mode-toggle button {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 0.5rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.mode-toggle button:hover {
+    color: var(--text-primary);
+}
+
+.mode-toggle button.active {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.input-container {
     flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+input, textarea {
     background: transparent;
     border: none;
     padding: 1rem 1.5rem;
@@ -137,10 +186,13 @@ input {
     color: var(--text-primary);
     font-family: inherit;
     outline: none;
+    width: 100%;
 }
 
-input::placeholder {
-    color: #64748b;
+textarea {
+    resize: vertical;
+    min-height: 56px; /* matches input height */
+    line-height: 1.5;
 }
 
 #year-select {
@@ -402,6 +454,46 @@ button:active {
     font-weight: 800;
     padding: 0.25rem 0.75rem;
     border-bottom-left-radius: 12px;
+}
+
+.bulk-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.bulk-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+}
+
+.bulk-card h3 {
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 0.5rem;
+}
+
+.bulk-card .category-name {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.bulk-card .bulk-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: auto;
 }
 
 @keyframes slideUp {

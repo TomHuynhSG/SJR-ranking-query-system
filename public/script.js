@@ -9,17 +9,66 @@ document.addEventListener('DOMContentLoaded', () => {
     const journalYear = document.getElementById('journal-year');
     const journalDetails = document.getElementById('journal-details');
     const categoriesGrid = document.getElementById('categories-grid');
+    
+    // Bulk Search UI elements
+    const btnSingleMode = document.getElementById('btn-single-mode');
+    const btnBulkMode = document.getElementById('btn-bulk-mode');
+    const bulkInput = document.getElementById('bulk-input');
+    const bulkResultsContainer = document.getElementById('bulk-results-container');
+    const bulkCategoriesGrid = document.getElementById('bulk-categories-grid');
+    const progressText = document.getElementById('progress-text');
+    
+    let isBulkMode = false;
+
+    // Toggle Mode Logic
+    btnSingleMode.addEventListener('click', () => {
+        isBulkMode = false;
+        btnSingleMode.classList.add('active');
+        btnBulkMode.classList.remove('active');
+        input.classList.remove('hidden');
+        input.setAttribute('required', 'true');
+        bulkInput.classList.add('hidden');
+        bulkInput.removeAttribute('required');
+        
+        // UI cleanup
+        bulkResultsContainer.classList.add('hidden');
+        errorMessage.classList.add('hidden');
+    });
+
+    btnBulkMode.addEventListener('click', () => {
+        isBulkMode = true;
+        btnBulkMode.classList.add('active');
+        btnSingleMode.classList.remove('active');
+        bulkInput.classList.remove('hidden');
+        bulkInput.setAttribute('required', 'true');
+        input.classList.add('hidden');
+        input.removeAttribute('required');
+        
+        // UI cleanup
+        resultsContainer.classList.add('hidden');
+        errorMessage.classList.add('hidden');
+    });
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const query = input.value.trim();
         const year = yearSelect.value;
+        if (isBulkMode) {
+            await handleBulkSearch(year);
+        } else {
+            const query = input.value.trim();
+            await handleSingleSearch(query, year);
+        }
+    });
+
+    async function handleSingleSearch(query, year) {
         if (!query) return;
 
         // Reset UI
         errorMessage.classList.add('hidden');
+        bulkResultsContainer.classList.add('hidden');
         resultsContainer.classList.add('hidden');
         loading.classList.remove('hidden');
+        progressText.classList.add('hidden');
         categoriesGrid.innerHTML = '';
 
         try {
@@ -118,5 +167,107 @@ document.addEventListener('DOMContentLoaded', () => {
             errorMessage.textContent = error.message;
             errorMessage.classList.remove('hidden');
         }
-    });
+    }
+
+    async function handleBulkSearch(year) {
+        const rawInput = bulkInput.value;
+        if (!rawInput.trim()) return;
+
+        // Parse input by commas, semicolons, and newlines
+        const journalList = rawInput.split(/[,\n;]+/)
+            .map(j => j.trim())
+            .filter(j => j.length > 0);
+
+        if (journalList.length === 0) return;
+
+        // Reset UI
+        errorMessage.classList.add('hidden');
+        resultsContainer.classList.add('hidden');
+        bulkResultsContainer.classList.add('hidden');
+        loading.classList.remove('hidden');
+        progressText.classList.remove('hidden');
+        bulkCategoriesGrid.innerHTML = '';
+        
+        let completed = 0;
+        
+        // Show container early so they see items pop in
+        bulkResultsContainer.classList.remove('hidden');
+
+        for (const journalName of journalList) {
+            completed++;
+            progressText.textContent = `Processing ${completed} of ${journalList.length}: ${journalName}...`;
+
+            try {
+                const response = await fetch(`/api/search?q=${encodeURIComponent(journalName)}&year=${year}`);
+                const data = await response.json();
+
+                if (!response.ok) {
+                    renderBulkError(journalName, data.error || 'Failed to fetch journal data');
+                    continue;
+                }
+
+                if (!data.categories || data.categories.length === 0) {
+                    renderBulkError(journalName, 'No categories found');
+                    continue;
+                }
+
+                // Find the best category
+                data.categories.sort((a, b) => {
+                    if (a.percentage === null || a.error) return 1;
+                    if (b.percentage === null || b.error) return -1;
+                    return a.percentage - b.percentage;
+                });
+
+                const bestCat = data.categories[0];
+                renderBulkSuccess(data.journalName, bestCat);
+
+            } catch (error) {
+                renderBulkError(journalName, error.message);
+            }
+        }
+
+        loading.classList.add('hidden');
+        progressText.classList.add('hidden');
+    }
+
+    function renderBulkSuccess(journalName, bestCat) {
+        const card = document.createElement('div');
+        card.className = 'bulk-card';
+        
+        if (bestCat.error || bestCat.percentage === null) {
+            card.innerHTML = `
+                <h3>${journalName}</h3>
+                <div class="category-name" style="color: #fca5a5;">No valid ranking data available</div>
+            `;
+        } else {
+            const percentageFormatted = (bestCat.percentage * 100).toFixed(2) + '%';
+            card.innerHTML = `
+                <h3 title="${journalName}">${journalName}</h3>
+                <div class="category-name" title="${bestCat.categoryName}">${bestCat.categoryName}</div>
+                <div class="bulk-stats">
+                    <div class="stat-box">
+                        <span class="stat-label">Best Rank</span>
+                        <div class="stat-value" style="font-size: 1.25rem;">${bestCat.rank} <span>/ ${bestCat.total}</span></div>
+                    </div>
+                    <div class="percentile" style="font-size: 1.5rem;">${percentageFormatted}</div>
+                </div>
+            `;
+        }
+        
+        bulkCategoriesGrid.appendChild(card);
+    }
+
+    function renderBulkError(journalName, errorMsg) {
+        const card = document.createElement('div');
+        card.className = 'bulk-card';
+        card.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+        card.style.background = 'rgba(239, 68, 68, 0.05)';
+        
+        card.innerHTML = `
+            <h3>${journalName}</h3>
+            <div class="category-name" style="color: #fca5a5;">Error: ${errorMsg}</div>
+        `;
+        
+        bulkCategoriesGrid.appendChild(card);
+    }
 });

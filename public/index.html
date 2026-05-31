@@ -21,66 +21,80 @@
         </header>
 
         <main>
+            <div class="mode-toggle">
+                <button type="button" id="btn-single-mode" class="active">Single Search</button>
+                <button type="button" id="btn-bulk-mode">Bulk Search</button>
+            </div>
             <div class="search-glass">
                 <form id="search-form">
-                    <input type="text" id="journal-input" placeholder="e.g. Nature Communications" required autocomplete="off">
-                    <select id="year-select" title="Select Year">
-                        <option value="2025">2025</option>
-                        <option value="2024">2024</option>
-                        <option value="2023">2023</option>
-                        <option value="2022">2022</option>
-                        <option value="2021">2021</option>
-                        <option value="2020">2020</option>
-                        <option value="2019">2019</option>
-                        <option value="2018">2018</option>
-                        <option value="2017">2017</option>
-                        <option value="2016">2016</option>
-                        <option value="2015">2015</option>
-                        <option value="2014">2014</option>
-                        <option value="2013">2013</option>
-                        <option value="2012">2012</option>
-                        <option value="2011">2011</option>
-                        <option value="2010">2010</option>
-                        <option value="2009">2009</option>
-                        <option value="2008">2008</option>
-                        <option value="2007">2007</option>
-                        <option value="2006">2006</option>
-                        <option value="2005">2005</option>
-                        <option value="2004">2004</option>
-                        <option value="2003">2003</option>
-                        <option value="2002">2002</option>
-                        <option value="2001">2001</option>
-                        <option value="2000">2000</option>
-                    </select>
-                    <button type="submit">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="11" cy="11" r="8"></circle>
-                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                        </svg>
-                    </button>
+                    <div class="input-group">
+                        <select id="year-select" title="Select Ranking Year">
+                            <option value="2025">2025</option>
+                            <option value="2024">2024</option>
+                            <option value="2023">2023</option>
+                            <option value="2022">2022</option>
+                            <option value="2021">2021</option>
+                            <option value="2020">2020</option>
+                            <option value="2019">2019</option>
+                            <option value="2018">2018</option>
+                            <option value="2017">2017</option>
+                            <option value="2016">2016</option>
+                            <option value="2015">2015</option>
+                            <option value="2014">2014</option>
+                            <option value="2013">2013</option>
+                            <option value="2012">2012</option>
+                            <option value="2011">2011</option>
+                            <option value="2010">2010</option>
+                            <option value="2009">2009</option>
+                            <option value="2008">2008</option>
+                            <option value="2007">2007</option>
+                            <option value="2006">2006</option>
+                            <option value="2005">2005</option>
+                            <option value="2004">2004</option>
+                            <option value="2003">2003</option>
+                            <option value="2002">2002</option>
+                            <option value="2001">2001</option>
+                            <option value="2000">2000</option>
+                        </select>
+                        
+                        <div class="input-container">
+                            <input type="text" id="journal-input" placeholder="e.g. Nature Communications" required autocomplete="off">
+                            <textarea id="bulk-input" class="hidden" placeholder="Paste journal names separated by commas or newlines...&#10;Nature Communications&#10;Cell&#10;Journal of Finance"></textarea>
+                        </div>
+
+                        <button type="submit" id="search-btn" title="Search">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        </button>
+                    </div>
                 </form>
             </div>
 
             <div id="loading" class="hidden">
                 <div class="spinner"></div>
-                <p>Fetching rankings and crunching data...<br><small>(Downloading CSVs from Scimago might take a few seconds)</small></p>
+                <p>Processing...</p>
+                <small id="progress-text" class="hidden"></small>
             </div>
 
             <div id="error-message" class="hidden"></div>
 
+            <!-- Single Result Container -->
             <div id="results-container" class="hidden">
                 <div class="results-header">
-                    <h2 id="journal-title">Journal Name</h2>
-                    <span id="journal-year" class="badge">2025</span>
+                    <div>
+                        <h2 id="journal-title">Journal Name</h2>
+                        <span id="journal-year" class="badge">2025</span>
+                    </div>
                 </div>
-                
-                <div id="journal-details" class="details-card hidden">
-                    <!-- Dynamic details will be inserted here -->
-                </div>
+                <div id="journal-details" class="details-card hidden"></div>
+                <div id="categories-grid" class="grid"></div>
+            </div>
 
-                <div id="categories-grid" class="grid">
-                    <!-- Cards will be dynamically inserted here -->
+            <!-- Bulk Result Container -->
+            <div id="bulk-results-container" class="hidden">
+                <div class="results-header">
+                    <h2>Bulk Analysis Results</h2>
                 </div>
+                <div id="bulk-categories-grid" class="grid"></div>
             </div>
         </main>
     </div>
