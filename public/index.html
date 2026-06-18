@@ -91,8 +91,9 @@
 
             <!-- Bulk Result Container -->
             <div id="bulk-results-container" class="hidden">
-                <div class="results-header">
+                <div class="results-header" style="display: flex; justify-content: space-between; align-items: center;">
                     <h2>Bulk Analysis Results</h2>
+                    <button id="btn-export-csv" class="btn-export" style="padding: 8px 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255, 255, 255, 0.1); color: white; cursor: pointer; font-family: inherit; font-weight: 600; transition: background 0.2s;">Export to CSV</button>
                 </div>
                 <div id="bulk-categories-grid" class="grid"></div>
             </div>

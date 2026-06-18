@@ -17,8 +17,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const bulkResultsContainer = document.getElementById('bulk-results-container');
     const bulkCategoriesGrid = document.getElementById('bulk-categories-grid');
     const progressText = document.getElementById('progress-text');
+    const btnExportCsv = document.getElementById('btn-export-csv');
     
     let isBulkMode = false;
+    let bulkExportData = [];
 
     // Toggle Mode Logic
     btnSingleMode.addEventListener('click', () => {
@@ -187,6 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loading.classList.remove('hidden');
         progressText.classList.remove('hidden');
         bulkCategoriesGrid.innerHTML = '';
+        bulkExportData = [];
         
         let completed = 0;
         
@@ -239,6 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <h3>${journalName}</h3>
                 <div class="category-name" style="color: #fca5a5;">No valid ranking data available</div>
             `;
+            bulkExportData.push([`"${journalName}"`, '"No valid ranking data available"', '""']);
         } else {
             const percentageFormatted = (bestCat.percentage * 100).toFixed(2) + '%';
             card.innerHTML = `
@@ -252,6 +256,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="percentile" style="font-size: 1.5rem;">${percentageFormatted}</div>
                 </div>
             `;
+            const exportRank = `"${percentageFormatted} (${bestCat.rank}/${bestCat.total})"`;
+            bulkExportData.push([`"${journalName}"`, exportRank, `"${bestCat.categoryName}"`]);
         }
         
         bulkCategoriesGrid.appendChild(card);
@@ -268,6 +274,24 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="category-name" style="color: #fca5a5;">Error: ${errorMsg}</div>
         `;
         
+        bulkExportData.push([`"${journalName}"`, `"Error: ${errorMsg}"`, '""']);
         bulkCategoriesGrid.appendChild(card);
+    }
+    if (btnExportCsv) {
+        btnExportCsv.addEventListener('click', () => {
+            if (bulkExportData.length === 0) return;
+            
+            let csvContent = "Journal Name,Best Rank,Subject Category\n";
+            csvContent += bulkExportData.map(e => e.join(",")).join("\n");
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", "bulk_search_results.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
     }
 });
