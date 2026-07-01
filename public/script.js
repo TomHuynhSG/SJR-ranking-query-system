@@ -242,7 +242,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 <h3>${journalName}</h3>
                 <div class="category-name" style="color: #fca5a5;">No valid ranking data available</div>
             `;
-            bulkExportData.push([`"${journalName}"`, '"No valid ranking data available"', '""']);
+            bulkExportData.push({
+                row: [`"${journalName}"`, '"No valid ranking data available"', '""'],
+                percentage: Infinity
+            });
         } else {
             const percentageFormatted = (bestCat.percentage * 100).toFixed(2) + '%';
             card.innerHTML = `
@@ -257,7 +260,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
             const exportRank = `"${percentageFormatted} (${bestCat.rank}/${bestCat.total})"`;
-            bulkExportData.push([`"${journalName}"`, exportRank, `"${bestCat.categoryName}"`]);
+            bulkExportData.push({
+                row: [`"${journalName}"`, exportRank, `"${bestCat.categoryName}"`],
+                percentage: bestCat.percentage
+            });
         }
         
         bulkCategoriesGrid.appendChild(card);
@@ -274,15 +280,20 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="category-name" style="color: #fca5a5;">Error: ${errorMsg}</div>
         `;
         
-        bulkExportData.push([`"${journalName}"`, `"Error: ${errorMsg}"`, '""']);
+        bulkExportData.push({
+            row: [`"${journalName}"`, `"Error: ${errorMsg}"`, '""'],
+            percentage: Infinity
+        });
         bulkCategoriesGrid.appendChild(card);
     }
     if (btnExportCsv) {
         btnExportCsv.addEventListener('click', () => {
             if (bulkExportData.length === 0) return;
             
+            const sortedData = [...bulkExportData].sort((a, b) => a.percentage - b.percentage);
+            
             let csvContent = "Journal Name,Best Rank,Subject Category\n";
-            csvContent += bulkExportData.map(e => e.join(",")).join("\n");
+            csvContent += sortedData.map(e => e.row.join(",")).join("\n");
             
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
